@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniChat</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta3/css/bootstrap.min.css" integrity="sha512-N415hCJJdJx+1UBfULt+i+ihvOn42V/kOjOpp1UTh4CZ70Hx5bDlKryWaqEKfY/8EYOu/C2MuyaluJryK1Lb5Q==" crossorigin="anonymous" />
+</head>
+
+<body class="container">
+    
+    <h1 class="mt-5">MiniChat</h1>
+    <hr>
+
+    <form id="miFormulario">
+        <div class="row">
+            
+            <div class="col-8">
+                <input type="text" id="txtMensaje" placeholder="Mensaje" class="form-control">
+            </div>
+
+            <div class="col-4">
+                <button type="submit" class="btn btn-primary">
+                    Enviar                    
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+    <div class="row">            
+        <div class="col">
+
+            <ul id="misMensajes" class="mt-2">                
+            </ul>
+
+        </div>
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js" integrity="sha512-zN6KYOtONNTOGXz0RkWX2EpavN9VdIs+2w+To+fhciFv83YA9maUpi2lzZWrOfKXdFIZZomWufBznkyHi3a8oQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script>
+        
+        const socket = io('http://localhost:8080'); //Cadena de conexión hacia socket server
+        
+        //Referencias elementos del DOM
+        const formulario = document.querySelector('#miFormulario');
+        const mensajes = document.querySelector('#misMensajes');
+        const txtMensaje = document.querySelector('#txtMensaje');
+
+        //Para enviar mensaje a servidor
+        formulario.addEventListener( 'submit', (ev) => {
+            ev.preventDefault();
+
+            const nuevoMensaje = txtMensaje.value;          
+            socket.emit('mensaje-to-server', { texto: nuevoMensaje })
+
+        } )
+
+        
+        socket.on( 'mensaje-from-server', (data) => {
+            
+            mensajes.innerHTML += `<li>${ data.texto }</li>`;
+            
+        })
+
+        
+        /*socket.on('mensaje-bienvenida', ( data ) => { //ON es para escuchar, EMIT para emitir
+            //console.log('El servidor emitió algo')
+            console.log( data );
+        });*/
+        //Socket cliente, diferente al servidor
+
+
+        
+        /*setTimeout(() => {            
+            //console.log( 'Enviando mensaje desde index.html' )
+            socket.emit( 'mensaje-cliente', { msg: 'Cliente', nombre: 'Klein' } );
+        }, 2000);*/
+
+
+    </script>
+    
+
+</body>
+</html>
